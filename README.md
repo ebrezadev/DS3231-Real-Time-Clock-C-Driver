@@ -53,13 +53,7 @@ uint8_t DS3231_run_state
 
 uint8_t DS3231_read
 
-uint8_t DS3231_square_wave
-
 uint8_t DS3231_init_status_report
-
-void DS3231_snapshot_save
-
-void DS3231_snapshot_clear
 
 void DS3231_init_status_update
 
