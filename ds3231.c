@@ -289,7 +289,7 @@ uint8_t ds3231_set(uint8_t option, uint8_t *data_array)
       time_i2c_read_single(DS3231_I2C_ADDRESS, DS3231_REGISTER_CONTROL_STATUS, &register_current_value);
       register_new_value = (register_current_value & (1 << DS3231_BIT_OSF)) | (*data_array & (~(1 << DS3231_BIT_OSF)));
       time_i2c_write_single(DS3231_I2C_ADDRESS, DS3231_REGISTER_CONTROL_STATUS, &register_new_value);
-      break;                                                                                          /*HERE HERE HERE HERE HERE HERE HERE HERE HERE HEREW HERE*/
+      break;                                                                                         
     case TIME:
       ds3231_data_clone(TIME, data_array);
       HEX_to_BCD(&time_registers_clone[0], 7);
