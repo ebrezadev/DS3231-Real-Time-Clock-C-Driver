@@ -192,6 +192,7 @@ ds3231_error_code_t _ds3231_set_time_and_calendar(const ds3231_handle_t *handle,
 	DS3231_LOCK(handle);
 	if (handle->interface.read_array((uint8_t)handle->i2c_address, (uint8_t)time_register, &data, 1) != 0)
 	{
+  DS3231_UNLOCK(handle);
 		return DS3231_ERROR_INTERFACE_READ;
 	}
 	DS3231_UNLOCK(handle);
