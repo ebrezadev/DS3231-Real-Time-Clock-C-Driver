@@ -1,4 +1,4 @@
-/*DS3231 low level API - Reza Ebrahimi v1.0*/
+/*DS3231 Interface - Reza Ebrahimi v2.0*/
 #include "interface.h"
 #include <Wire.h>
 
@@ -77,4 +77,5 @@ int ds3231_interface_unlock(void *mutex_handle)
 
 	return 0;
 }
+
 
