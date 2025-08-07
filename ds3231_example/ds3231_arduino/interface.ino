@@ -60,6 +60,7 @@ int ds3231_read_array(uint8_t deviceAddress, uint8_t startRegisterAddress, uint8
 int ds3231_interface_ack_test(uint8_t deviceAddress)
 {
 	Wire.beginTransmission(deviceAddress);
+	Wire.write(0);
 	uint8_t error = Wire.endTransmission(deviceAddress);
 
 	return error;
@@ -76,3 +77,4 @@ int ds3231_interface_unlock(void *mutex_handle)
 
 	return 0;
 }
+
