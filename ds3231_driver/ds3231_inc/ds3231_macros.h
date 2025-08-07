@@ -48,7 +48,6 @@ extern "C"
 		}                                    \
 	} while (0)
 
-
 #if DS3231_INCLUDE_SAFE_RANGE_CHECK
 /*Check the value range for safety*/
 #define DS3231_RANGE_ERROR(value, index)                                                                                  \
@@ -62,22 +61,6 @@ extern "C"
 #else
 #define DS3231_RANGE_ERROR(value, index) ;
 #endif
-
-
-#if DS3231_INCLUDE_CONNECTION_CHECK
-/*Check the ds3231 connected to i2c bus*/
-#define DS3231_CONNECTION_CHECK(handle)                                         \
-	do                                                                                 \
-	{                                                                                  \
-		if (handle->interface.interface_ack_test((uint8_t)(handle->i2c_address)) != 0) \
-		{                                                                              \
-			return DS3231_ERROR_DS3231_NOT_CONNECTED;                                  \
-		}                                                                              \
-	} while (0)
-#else
-#define DS3231_CONNECTION_CHECK(handle) ;
-#endif
-
 
 #if DS3231_INCLUDE_EXCLUSION_HOOK
 /*Defining mutual exclusion lock and unlock*/
@@ -102,33 +85,48 @@ extern "C"
 #define DS3231_UNLOCK(handle) ;
 #endif
 
+#if DS3231_INCLUDE_CONNECTION_CHECK
+/*Check the ds3231 connected to i2c bus*/
+#define DS3231_CONNECTION_CHECK(handle)                                                \
+	do                                                                                 \
+	{                                                                                  \
+		DS3231_LOCK(handle);                                                           \
+		if (handle->interface.interface_ack_test((uint8_t)(handle->i2c_address)) != 0) \
+		{                                                                              \
+			DS3231_UNLOCK(handle);                                                     \
+			return DS3231_ERROR_DS3231_NOT_CONNECTED;                                  \
+		}                                                                              \
+		DS3231_UNLOCK(handle);                                                         \
+	} while (0)
+#else
+#define DS3231_CONNECTION_CHECK(handle) ;
+#endif
 
 #if DS3231_INCLUDE_NULL_CHECK
 /*Checking for NULL pointers*/
 #define DS3231_NULL_CHECK_MACRO(handle, error) \
 	do                                         \
 	{                                          \
-		error = _ds3231_null_check(handle);     \
+		error = _ds3231_null_check(handle);    \
 		DS3231_CHECK_AND_RETURN_ERROR(error);  \
 	} while (0)
 #else
 #define DS3231_NULL_CHECK_MACRO(handle, error) ;
 #endif
 
-
 #if DS3231_INCLUDE_WRITE_VERIFICATION
 /*Verify the written bit or byte*/
-#define DS3231_VERIFY_BIT(handle, error, register_address, bit_address, expected)                 \
-	do                                                                                            \
-	{                                                                                             \
+#define DS3231_VERIFY_BIT(handle, error, register_address, bit_address, expected)                  \
+	do                                                                                             \
+	{                                                                                              \
 		error = _ds3231_write_verify_bit((handle), (register_address), (bit_address), (expected)); \
-		DS3231_CHECK_AND_RETURN_ERROR(error);                                                     \
+		DS3231_CHECK_AND_RETURN_ERROR(error);                                                      \
 	} while (0)
-#define DS3231_VERIFY_BYTES(handle, error, register_address, expected, number_of_bytes)                 \
-	do                                                                                                  \
-	{                                                                                                   \
+#define DS3231_VERIFY_BYTES(handle, error, register_address, expected, number_of_bytes)                  \
+	do                                                                                                   \
+	{                                                                                                    \
 		error = _ds3231_write_verify_bytes((handle), (register_address), (expected), (number_of_bytes)); \
-		DS3231_CHECK_AND_RETURN_ERROR(error);                                                           \
+		DS3231_CHECK_AND_RETURN_ERROR(error);                                                            \
 	} while (0)
 #else
 #define DS3231_VERIFY_BIT(handle, error, register_address, bit_address, expected) ;
@@ -140,4 +138,3 @@ extern "C"
 #endif
 
 #endif
-
